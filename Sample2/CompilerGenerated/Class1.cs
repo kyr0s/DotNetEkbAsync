@@ -7,13 +7,12 @@ namespace Sample2.CompilerGenerated
 {
     public class Class1
     {
-        public Task Run(int count, string name)
+        public Task Run(Request request)
         {
             var stateMachine = new RunMethodStateMachine();
 
             stateMachine.@this = this;
-            stateMachine.count = count;
-            stateMachine.name = name;
+            stateMachine.request = request;
 
             stateMachine.state = -1;
 
@@ -22,13 +21,12 @@ namespace Sample2.CompilerGenerated
             return stateMachine.builder.Task;
         }
 
-        private Task<string> AsyncMethod1(int count, string name)
+        private Task<string> ReadDataAsync(int itemId)
         {
-            var stateMachine = new AsyncMethod1StateMachine();
+            var stateMachine = new ReadDataAsyncStateMachine();
 
             stateMachine.@this = this;
-            stateMachine.count = count;
-            stateMachine.name = name;
+            stateMachine.itemId = itemId;
 
             stateMachine.state = -1;
 
@@ -37,72 +35,69 @@ namespace Sample2.CompilerGenerated
             return stateMachine.builder.Task;
         }
 
-        private Task<string> AsyncMethod2(int count, string name)
+        private Task WriteDataAsync(int itemId, string data)
         {
-            var stateMachine = new AsyncMethod2StateMachine();
+            var stateMachine = new WriteDataAsyncStateMachine();
 
             stateMachine.@this = this;
-            stateMachine.count = count;
-            stateMachine.name = name;
+            stateMachine.itemId = itemId;
+            stateMachine.data = data;
 
             stateMachine.state = -1;
 
-            stateMachine.builder = AsyncTaskMethodBuilder<string>.Create();
+            stateMachine.builder = AsyncTaskMethodBuilder.Create();
             stateMachine.builder.Start(ref stateMachine);
             return stateMachine.builder.Task;
         }
 
-        private int SyncMethod1(int count, string name)
+        private int GetItemId(Request request)
         {
-            return count;
+            return int.Parse(request.ItemId);
         }
 
-        private int SyncMethod2(int count, string name)
+        private string ChangeData(string data)
         {
-            return count;
+            return Guid.NewGuid().ToString();
         }
 
-        private void SyncMethod3(int count, string name)
+        private void PostprocessRequest(Request request, string data)
         {
         }
 
         [CompilerGenerated]
         private sealed class RunMethodStateMachine : IAsyncStateMachine
         {
-            public AsyncTaskMethodBuilder builder;
-            private TaskAwaiter<string> awaiter;
-
             public int state;
+            public AsyncTaskMethodBuilder builder;
 
             public Class1 @this;
-            public int count;
-            public string name;
+            public Request request;
 
-            private int count1;
-            private string name1;
+            private int itemId;
+            private string data;
+            private string changedData;
 
-            private int count2;
-            private string name2;
+            private TaskAwaiter<string> awaiter1;
+            private TaskAwaiter awaiter2;
 
             void IAsyncStateMachine.MoveNext()
             {
                 try
                 {
-                    var awaiter1 = new TaskAwaiter<string>();
-                    var awaiter2 = new TaskAwaiter<string>();
+                    var internalAwaiter1 = new TaskAwaiter<string>();
+                    var internalAwaiter2 = new TaskAwaiter();
 
                     if (state == -1)
                     {
-                        count1 = @this.SyncMethod1(count, name);
-                        awaiter1 = @this.AsyncMethod1(count, name).GetAwaiter();
-
-                        if (!awaiter1.IsCompleted)
+                        itemId = @this.GetItemId(request);
+                        internalAwaiter1 = @this.ReadDataAsync(itemId).GetAwaiter();
+                        if (!internalAwaiter1.IsCompleted)
                         {
                             state = 0;
 
-                            awaiter = awaiter1;
+                            awaiter1 = internalAwaiter1;
                             var stateMachine = this;
-                            builder.AwaitUnsafeOnCompleted(ref awaiter1, ref stateMachine);
+                            builder.AwaitUnsafeOnCompleted(ref internalAwaiter1, ref stateMachine);
                             return;
                         }
                         else
@@ -113,35 +108,36 @@ namespace Sample2.CompilerGenerated
 
                     if (state == 0)
                     {
-                        awaiter1 = awaiter;
-                        awaiter = new TaskAwaiter<string>();
+                        internalAwaiter1 = awaiter1;
+                        awaiter1 = new TaskAwaiter<string>();
                         state = 1;
                     }
 
                     if (state == 1)
                     {
-                        name1 = awaiter1.GetResult(); ;
-                        count2 = @this.SyncMethod2(count1, name1);
-                        awaiter2 = @this.AsyncMethod2(count1, name1).GetAwaiter();
+                        data = internalAwaiter1.GetResult();
+                        changedData = @this.ChangeData(data);
 
-                        if (!awaiter2.IsCompleted)
+                        internalAwaiter2 = @this.WriteDataAsync(itemId, data).GetAwaiter();
+                        if (!internalAwaiter2.IsCompleted)
                         {
                             state = 2;
-                            awaiter = awaiter2;
+
+                            awaiter2 = internalAwaiter2;
                             var stateMachine = this;
-                            builder.AwaitUnsafeOnCompleted(ref awaiter2, ref stateMachine);
+                            builder.AwaitUnsafeOnCompleted(ref internalAwaiter2, ref stateMachine);
                             return;
                         }
                     }
 
                     if (state == 2)
                     {
-                        awaiter2 = awaiter;
-                        awaiter = new TaskAwaiter<string>();
+                        internalAwaiter2 = awaiter2;
+                        awaiter2 = new TaskAwaiter();
                     }
 
-                    name2 = awaiter2.GetResult(); ;
-                    @this.SyncMethod3(count2, name2);
+                    internalAwaiter2.GetResult();
+                    @this.PostprocessRequest(request, changedData);
                 }
                 catch (Exception ex)
                 {
@@ -149,7 +145,6 @@ namespace Sample2.CompilerGenerated
                     builder.SetException(ex);
                     return;
                 }
-
                 state = -2;
                 builder.SetResult();
             }
@@ -161,19 +156,18 @@ namespace Sample2.CompilerGenerated
         }
 
         [CompilerGenerated]
-        private sealed class AsyncMethod1StateMachine : IAsyncStateMachine
+        private sealed class ReadDataAsyncStateMachine : IAsyncStateMachine
         {
             public int state;
-      public AsyncTaskMethodBuilder<string> builder;
-            public int count;
-            public string name;
+            public AsyncTaskMethodBuilder<string> builder;
+            public int itemId;
             public Class1 @this;
-      private TaskAwaiter u__1;
+            private TaskAwaiter awaiter;
 
             void IAsyncStateMachine.MoveNext()
             {
                 int num1 = this.state;
-                string result;
+                string @string;
                 try
                 {
                     TaskAwaiter awaiter;
@@ -184,21 +178,21 @@ namespace Sample2.CompilerGenerated
                         if (!awaiter.IsCompleted)
                         {
                             this.state = num2 = 0;
-                            this.u__1 = awaiter;
-                            Class1.AsyncMethod1StateMachine stateMachine = this;
-                            this.builder.AwaitUnsafeOnCompleted<TaskAwaiter, Class1.AsyncMethod1StateMachine>(ref awaiter, ref stateMachine);
+                            this.awaiter = awaiter;
+                            ReadDataAsyncStateMachine stateMachine = this;
+                            this.builder.AwaitUnsafeOnCompleted<TaskAwaiter, ReadDataAsyncStateMachine>(ref awaiter, ref stateMachine);
                             return;
                         }
                     }
                     else
                     {
-                        awaiter = this.u__1;
-                        this.u__1 = new TaskAwaiter();
+                        awaiter = this.awaiter;
+                        this.awaiter = new TaskAwaiter();
                         this.state = num2 = -1;
                     }
                     awaiter.GetResult();
                     awaiter = new TaskAwaiter();
-                    result = this.name;
+                    @string = Guid.NewGuid().ToString();
                 }
                 catch (Exception ex)
                 {
@@ -207,7 +201,7 @@ namespace Sample2.CompilerGenerated
                     return;
                 }
                 this.state = -2;
-                this.builder.SetResult(result);
+                this.builder.SetResult(@string);
             }
 
             [DebuggerHidden]
@@ -217,19 +211,18 @@ namespace Sample2.CompilerGenerated
         }
 
         [CompilerGenerated]
-        private sealed class AsyncMethod2StateMachine : IAsyncStateMachine
+        private sealed class WriteDataAsyncStateMachine : IAsyncStateMachine
         {
             public int state;
-      public AsyncTaskMethodBuilder<string> builder;
-            public int count;
-            public string name;
+            public AsyncTaskMethodBuilder builder;
+            public int itemId;
+            public string data;
             public Class1 @this;
-      private TaskAwaiter u__1;
+            private TaskAwaiter awaiter;
 
             void IAsyncStateMachine.MoveNext()
             {
                 int num1 = this.state;
-                string result;
                 try
                 {
                     TaskAwaiter awaiter;
@@ -240,21 +233,20 @@ namespace Sample2.CompilerGenerated
                         if (!awaiter.IsCompleted)
                         {
                             this.state = num2 = 0;
-                            this.u__1 = awaiter;
-                            Class1.AsyncMethod2StateMachine stateMachine = this;
-                            this.builder.AwaitUnsafeOnCompleted<TaskAwaiter, Class1.AsyncMethod2StateMachine>(ref awaiter, ref stateMachine);
+                            this.awaiter = awaiter;
+                            WriteDataAsyncStateMachine stateMachine = this;
+                            this.builder.AwaitUnsafeOnCompleted<TaskAwaiter, WriteDataAsyncStateMachine>(ref awaiter, ref stateMachine);
                             return;
                         }
                     }
                     else
                     {
-                        awaiter = this.u__1;
-                        this.u__1 = new TaskAwaiter();
+                        awaiter = this.awaiter;
+                        this.awaiter = new TaskAwaiter();
                         this.state = num2 = -1;
                     }
                     awaiter.GetResult();
                     awaiter = new TaskAwaiter();
-                    result = this.name;
                 }
                 catch (Exception ex)
                 {
@@ -263,7 +255,7 @@ namespace Sample2.CompilerGenerated
                     return;
                 }
                 this.state = -2;
-                this.builder.SetResult(result);
+                this.builder.SetResult();
             }
 
             [DebuggerHidden]

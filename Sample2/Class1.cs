@@ -1,43 +1,43 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Sample2
 {
     public class Class1
     {
-        public async Task Run(int count, string name)
+        public async Task Run(Request request)
         {
-            var count1 = SyncMethod1(count, name);
-            var name1 = await AsyncMethod1(count, name);
+            var itemId = GetItemId(request);
+            var data = await ReadDataAsync(itemId);
 
-            var count2 = SyncMethod2(count1, name1);
-            var name2 = await AsyncMethod2(count1, name1);
+            var changedData = ChangeData(data);
+            await WriteDataAsync(itemId, data);
 
-            SyncMethod3(count2, name2);
+            PostprocessRequest(request, changedData);
         }
 
-        private async Task<string> AsyncMethod1(int count, string name)
-        {
-            await Task.Delay(100);
-            return name;
-        }
-
-        private async Task<string> AsyncMethod2(int count, string name)
+        private async Task<string> ReadDataAsync(int itemId)
         {
             await Task.Delay(100);
-            return name;
+            return Guid.NewGuid().ToString();
         }
 
-        private int SyncMethod1(int count, string name)
+        private async Task WriteDataAsync(int itemId, string data)
         {
-            return count;
+            await Task.Delay(100);
         }
 
-        private int SyncMethod2(int count, string name)
+        private int GetItemId(Request request)
         {
-            return count;
+            return int.Parse(request.ItemId);
         }
 
-        private void SyncMethod3(int count, string name)
+        private string ChangeData(string data)
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        private void PostprocessRequest(Request request, string data)
         {}
     }
 }
