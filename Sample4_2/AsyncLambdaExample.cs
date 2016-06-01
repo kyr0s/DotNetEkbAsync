@@ -14,7 +14,6 @@ namespace Sample4_2
                 {
                     Execute(async () =>
                     {
-                        var command = Console.ReadLine();
                         await Task.Delay(100);
                         throw new Exception("random error");
                     });

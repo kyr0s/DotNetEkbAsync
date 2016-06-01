@@ -14,6 +14,9 @@ namespace Sample1
 
             const int tasksCount = 9;
 
+            Console.WriteLine("Are you ready?");
+            Console.ReadKey();
+
             RunParallelSync(tasksCount);
             Console.ReadKey();
 
@@ -32,6 +35,8 @@ namespace Sample1
 
         private static void RunParallelSync(int tasksCount)
         {
+            Console.WriteLine();
+            Console.WriteLine("Parallel sync run started");
             var sw = Stopwatch.StartNew();
 
             var tasks = Enumerable.Range(0, tasksCount)
@@ -51,6 +56,8 @@ namespace Sample1
 
         private static void RunParallelAsync(int tasksCount)
         {
+            Console.WriteLine();
+            Console.WriteLine("Parallel async run started");
             var sw = Stopwatch.StartNew();
 
             var tasks = Enumerable.Range(0, tasksCount)

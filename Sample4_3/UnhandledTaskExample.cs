@@ -7,7 +7,7 @@ namespace Sample4_3
     {
         public static async void Run()
         {
-            SetupExceptionHandle();
+//            SetupExceptionHandle();
 
             try
             {
@@ -29,15 +29,17 @@ namespace Sample4_3
             throw new Exception("random error");
         }
 
-//        private static void HandleUnobserved(object sender, UnobservedTaskExceptionEventArgs eventArgs)
-//        {
-//            Console.WriteLine("Unobserved task error catched:\r\n" + eventArgs.Exception);
-//            eventArgs.SetObserved();
-//        }
+        #region exception handling
+        private static void HandleUnobserved(object sender, UnobservedTaskExceptionEventArgs eventArgs)
+        {
+            Console.WriteLine("Unobserved task error catched:\r\n" + eventArgs.Exception);
+            eventArgs.SetObserved();
+        }
 
         private static void SetupExceptionHandle()
         {
-            //TaskScheduler.UnobservedTaskException += HandleUnobserved;
+            TaskScheduler.UnobservedTaskException += HandleUnobserved;
         }
+        #endregion
     }
 }
