@@ -1,8 +1,8 @@
-
 using System;
 using System.Threading.Tasks;
 
-namespace Sample4
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+namespace Sample4_2
 {
     class AsyncLambdaExample
     {
@@ -15,11 +15,8 @@ namespace Sample4
                     Execute(async () =>
                     {
                         var command = Console.ReadLine();
-
                         await Task.Delay(100);
-//                        throw new Exception("random error");
-
-                        Console.WriteLine($"Command '{command}' processed");
+                        throw new Exception("random error");
                     });
                 }
             }

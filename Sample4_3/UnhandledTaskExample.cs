@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Sample4
+namespace Sample4_3
 {
     class UnhandledTaskExample
     {
-        public static void Run()
+        public static async void Run()
         {
-            TaskScheduler.UnobservedTaskException += HandleUnobserved;
+            SetupExceptionHandle();
 
             try
             {
                 while (true)
                 {
-                    GC.Collect();
                     var command = Console.ReadLine();
-                    ProcessAsync(command);
+                    await ProcessAsync(command);
                 }
             }
             catch (Exception err)
@@ -27,15 +26,18 @@ namespace Sample4
         private static async Task ProcessAsync(string command)
         {
             await Task.Delay(100);
-
             throw new Exception("random error");
-            Console.WriteLine($"Command '{command}' processed");
         }
 
-        private static void HandleUnobserved(object sender, UnobservedTaskExceptionEventArgs unobservedTaskExceptionEventArgs)
+//        private static void HandleUnobserved(object sender, UnobservedTaskExceptionEventArgs eventArgs)
+//        {
+//            Console.WriteLine("Unobserved task error catched:\r\n" + eventArgs.Exception);
+//            eventArgs.SetObserved();
+//        }
+
+        private static void SetupExceptionHandle()
         {
-            Console.WriteLine("Unobserved task error catched:\r\n" + unobservedTaskExceptionEventArgs.Exception);
-            unobservedTaskExceptionEventArgs.SetObserved();
+            //TaskScheduler.UnobservedTaskException += HandleUnobserved;
         }
     }
 }

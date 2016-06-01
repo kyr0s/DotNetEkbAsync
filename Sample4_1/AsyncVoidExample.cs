@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Sample4
+namespace Sample4_1
 {
     class AsyncVoidExample
     {
@@ -24,9 +24,7 @@ namespace Sample4
         private static async void ProcessAsync(string command)
         {
             await Task.Delay(100);
-
-//            throw new Exception("random error");
-            Console.WriteLine($"Command '{command}' processed");
+            throw new Exception("random error");
         }
     }
 }

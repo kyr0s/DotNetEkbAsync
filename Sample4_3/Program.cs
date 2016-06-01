@@ -1,11 +1,9 @@
-﻿namespace Sample4
+﻿namespace Sample4_3
 {
     class Program
     {
         static void Main(string[] args)
         {
-//            AsyncVoidExample.Run();
-//            AsyncLambdaExample.Run();
             UnhandledTaskExample.Run();
         }
     }

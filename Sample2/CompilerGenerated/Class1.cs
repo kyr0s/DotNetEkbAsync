@@ -89,8 +89,11 @@ namespace Sample2.CompilerGenerated
 
                     if (state == -1)
                     {
+                        //note: синхронный пролог метода
                         itemId = @this.GetItemId(request);
                         internalAwaiter1 = @this.ReadDataAsync(itemId).GetAwaiter();
+
+                        //note: точка возможного выхода из метода после вызова первой асинхронной операции
                         if (!internalAwaiter1.IsCompleted)
                         {
                             state = 0;
@@ -115,10 +118,12 @@ namespace Sample2.CompilerGenerated
 
                     if (state == 1)
                     {
+                        //note: продолжение исполнения метода после первого await'а
                         data = internalAwaiter1.GetResult();
                         changedData = @this.ChangeData(data);
-
                         internalAwaiter2 = @this.WriteDataAsync(itemId, data).GetAwaiter();
+
+                        //note: точка возможного выхода из метода после вызова второй асинхронной операции
                         if (!internalAwaiter2.IsCompleted)
                         {
                             state = 2;
@@ -136,6 +141,7 @@ namespace Sample2.CompilerGenerated
                         awaiter2 = new TaskAwaiter();
                     }
 
+                    //note: последняя часть метода
                     internalAwaiter2.GetResult();
                     @this.PostprocessRequest(request, changedData);
                 }
