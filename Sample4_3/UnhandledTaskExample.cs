@@ -13,8 +13,9 @@ namespace Sample4_3
             {
                 while (true)
                 {
+                    GC.Collect();
                     var command = Console.ReadLine();
-                    await ProcessAsync(command);
+                    ProcessAsync(command);
                 }
             }
             catch (Exception err)
